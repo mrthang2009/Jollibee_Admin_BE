@@ -159,6 +159,7 @@ module.exports = {
   uploadAvatarMe: (req, res, next) => {
     upload.single("avatar")(req, res, async (err) => {
       try {
+        const id = req.user._id;
         if (!req.file) {
           return res.status(400).json({ message: "No image file provided" });
         }
@@ -189,7 +190,6 @@ module.exports = {
         });
         await media.save();
         
-        const id = req.user._id;
         const employee = await Employee.findOneAndUpdate(
           { _id: id },
           { avatarId: media._id },

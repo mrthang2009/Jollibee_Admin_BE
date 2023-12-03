@@ -57,7 +57,7 @@ app.use("/products", passport.authenticate('jwt', { session: false }), productsR
 app.use("/orders", passport.authenticate('jwt', { session: false }), ordersRouter);
 app.use("/customers", passport.authenticate('jwt', { session: false }), access.checkRole(['MANAGE','SALES']), customersRouter);
 app.use("/suppliers", passport.authenticate('jwt', { session: false }), access.checkRole(['MANAGE']), suppliersRouter);
-app.use("/medias", mediasRouter);
+app.use("/medias", passport.authenticate('jwt', { session: false }), mediasRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
