@@ -78,7 +78,7 @@ app.use(
 app.use(
   "/customers",
   passport.authenticate("jwt", { session: false }),
-  access.checkRole(["MANAGE", "SALES"]),
+  access.checkRole(["MANAGE", "SALES", "SHIPPER"]),
   customersRouter
 );
 app.use(

@@ -35,9 +35,7 @@ module.exports = {
           );
         } else {
           if (product.stock < item.quantity)
-            errors.push(
-              `Số lượng sản phẩm ${product.name} không khả dụng`
-            );
+            errors.push(`Số lượng sản phẩm ${product.name} không khả dụng`);
         }
 
         finalProductList.push({
@@ -101,19 +99,21 @@ module.exports = {
   getOrdersByYear: async (req, res, next) => {
     try {
       const { year } = req.query;
-  
+
       const startOfYear = moment(`${year}-01-01`).startOf("year");
       const endOfYear = moment(startOfYear).endOf("year");
-  
+
       const orders = await Order.find({
         createdDate: {
           $gte: startOfYear.toDate(),
           $lte: endOfYear.toDate(),
         },
       }).sort({ createdDate: -1 });
-  
+
       return res.status(200).json({
-        message: `Retrieve orders for ${startOfYear.format("YYYY")} successfully`,
+        message: `Retrieve orders for ${startOfYear.format(
+          "YYYY"
+        )} successfully`,
         count: orders.length,
         payload: orders,
       });
@@ -179,11 +179,11 @@ module.exports = {
   getOrdersMeByMonth: async (req, res, next) => {
     try {
       const { year, month } = req.query;
-  
+
       // Xác định khoảng thời gian từ đầu đến cuối của tháng
       const startOfMonth = moment(`${year}-${month}-01`).startOf("month");
       const endOfMonth = moment(startOfMonth).endOf("month");
-  
+
       const orders = await Order.find({
         createdDate: {
           $gte: startOfMonth.toDate(),
@@ -191,9 +191,11 @@ module.exports = {
         },
         employeeId: req.user._id, // Lọc theo id của nhân viên đang đăng nhập
       }).sort({ createdDate: -1 });
-  
+
       return res.status(200).json({
-        message: `Retrieve orders for ${startOfMonth.format("MMMM YYYY")} successfully`,
+        message: `Retrieve orders for ${startOfMonth.format(
+          "MMMM YYYY"
+        )} successfully`,
         count: orders.length,
         payload: orders,
       });
@@ -205,7 +207,7 @@ module.exports = {
       });
     }
   },
-  
+
   getListOrderMe: async (req, res, next) => {
     try {
       const id = req.user._id;
@@ -284,6 +286,18 @@ module.exports = {
         { status: newStatus },
         { new: true }
       );
+      // Kiểm tra trạng thái mới của đơn hàng
+      if (newStatus === "FLAKER") {
+        // Nếu trạng thái là "Flaker", thì tăng countCancellations trong dữ liệu khách hàng
+        const customer = await Customer.findByIdAndUpdate(
+          payload.customerId,
+          { $inc: { countCancellations: 1 } },
+          { new: true }
+        );
+
+        console.log("««««« customer »»»»»", customer);
+      }
+
       return res.status(200).json({
         message: "Update online order status data successfully",
         payload,
