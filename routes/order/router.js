@@ -30,11 +30,13 @@ router
   .get(access.checkRole(["SHIPPER", "SALES"]), getOrdersMeByMonth);
 // router.route("/all").get(access.checkRole("MANAGE"), getAllOrder);
 router.route("/").get(access.checkRole("MANAGE"), getListOrder);
-router.route("/filter").get(access.checkRole("MANAGE"), filterOrder);
+router
+  .route("/filter")
+  .get(access.checkRole(["SHIPPER", "SALES", "MANAGE"]), filterOrder);
 
 router.route("/me").get(access.checkRole(["SHIPPER", "SALES"]), getListOrderMe);
 router
-  .route("/pending-sales")
+  .route("/pending")
   .get(access.checkRole(["SHIPPER", "SALES"]), getListPendingOrder);
 router
   .route("/filter/me")
