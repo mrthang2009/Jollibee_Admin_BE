@@ -14,22 +14,31 @@ module.exports = {
       });
 
       const payload = await newSupplier.save();
-      res.status(200).json({ message: "Add supplier successfully", payload, });
+      res.status(200).json({ message: "Add supplier successfully", payload });
     } catch (error) {
       console.log("««««« error »»»»»", error);
-      res.status(400).json({ message: "Adding supplier failed", error, });
-
+      res.status(400).json({ message: "Adding supplier failed", error });
     }
   },
 
   getAllSupplier: async (req, res, next) => {
     try {
-      const payload = await Supplier.find({ isDeleted: false });
+      const payload = await Supplier.find({ isDeleted: false }).populate(
+        "media"
+      );
       const total = payload.length;
-      res.status(200).json({ message: "Retrieve suppliers data successfully", total, payload, });
+      res
+        .status(200)
+        .json({
+          message: "Retrieve suppliers data successfully",
+          total,
+          payload,
+        });
     } catch (error) {
       console.log("««««« error »»»»»", error);
-      res.status(400).json({ message: "Retrieving suppliers data failed", error, });
+      res
+        .status(400)
+        .json({ message: "Retrieving suppliers data failed", error });
     }
   },
 
@@ -41,12 +50,19 @@ module.exports = {
         isDeleted: false,
       });
       if (!payload) {
-        res.status(400).json({ message: "No supplier found in data", });
+        res.status(400).json({ message: "No supplier found in data" });
       }
-      res.status(200).json({ message: "Retrieve detailed supplier data successfully", payload, });
+      res
+        .status(200)
+        .json({
+          message: "Retrieve detailed supplier data successfully",
+          payload,
+        });
     } catch (error) {
       console.log("««««« error »»»»»", error);
-      res.status(400).json({ message: "Retrieving detailed supplier data failed", error, });
+      res
+        .status(400)
+        .json({ message: "Retrieving detailed supplier data failed", error });
     }
   },
 
@@ -58,14 +74,17 @@ module.exports = {
       const payload = await Supplier.findOneAndUpdate(
         { _id: id, isDeleted: false },
         { name, email, phoneNumber, address },
-        { new: true });
+        { new: true }
+      );
       if (!payload) {
-        res.status(400).json({ message: "No supplier found in data", });
+        res.status(400).json({ message: "No supplier found in data" });
       }
-      res.status(200).json({ message: "Updated supplier data successfully", payload, });
+      res
+        .status(200)
+        .json({ message: "Updated supplier data successfully", payload });
     } catch (error) {
       console.log("««««« error »»»»»", error);
-      res.status(400).json({ message: "Updating supplier data failed", error, });
+      res.status(400).json({ message: "Updating supplier data failed", error });
     }
   },
 
@@ -78,13 +97,12 @@ module.exports = {
         { new: true }
       );
       if (!payload) {
-        res.status(400).json({ message: "No supplier found in data", });
+        res.status(400).json({ message: "No supplier found in data" });
       }
-      res.status(200).json({ message: "Delete supplier data successfully", });
+      res.status(200).json({ message: "Delete supplier data successfully" });
     } catch (error) {
       console.log("««««« error »»»»»", error);
-      res.status(400).json({ message: "Delete supplier data failed", error, });
-
+      res.status(400).json({ message: "Delete supplier data failed", error });
     }
   },
 
@@ -100,7 +118,7 @@ module.exports = {
           { name: { $regex: fuzzySearch(keyword) } },
           { email: { $regex: fuzzySearch(keyword) } },
           { phoneNumber: { $regex: fuzzySearch(keyword) } },
-        ]
+        ],
       }).sort({ name: 1 });
 
       const totalSupplier = await Supplier.countDocuments(conditionFind);
