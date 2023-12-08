@@ -173,7 +173,7 @@ module.exports = {
         .limit(limit)
         .sort({ name: 1, price: 1, discount: -1 });
 
-      const totalProduct = await Product.countDocuments(payload);
+      const totalProduct = await Product.countDocuments({ isDeleted: false });
       return res.status(200).json({
         message: "Retrieve products data successfully",
         totalProduct,
