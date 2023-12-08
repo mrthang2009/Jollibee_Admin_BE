@@ -6,7 +6,6 @@ const {
   uploadImageCategory,
   uploadImageProduct,
   uploadAvatarMe,
-  uploadMultiple,
   uploadSingle,
   uploadMultipleImages,
 } = require("./controller");

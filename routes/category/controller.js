@@ -75,10 +75,11 @@ module.exports = {
   createCategory2: async (req, res, next) => {
     const { name, description } = req.body;
     try {
+      const media = await Media.findOne({ name: "LOGO" });
       const newCategory = new Category({
         name,
         description: description || null,
-        imageId: null,
+        imageId: media._id,
       });
       const savedCategory = await newCategory.save();
       return res.status(200).json({

@@ -10,48 +10,6 @@ const upload = multer({
 });
 
 module.exports = {
-  uploadSingle: (req, res, next) => {
-    upload.single("image")(req, res, async (err) => {
-      try {
-        if (!req.file) {
-          return res.status(400).json({ message: "No image file provided" });
-        }
-        const S3 = new S3Client({
-          region: "auto",
-          endpoint: process.env.ENDPOINT,
-          credentials: {
-            accessKeyId: process.env.R2_ACCESS_KEY_ID,
-            secretAccessKey: process.env.R2_SECRET_ACCESS_KEY,
-          },
-        });
-
-        const fileName = generateUniqueFileName(req.file.originalname);
-
-        await S3.send(
-          new PutObjectCommand({
-            Body: req.file.buffer,
-            Bucket: "ecommerce",
-            Key: fileName,
-            ContentType: req.file.mimetype,
-          })
-        );
-
-        const url = `${process.env.R2_DEV_URL}/ecommerce/${fileName}`;
-        const media = new Media({
-          coverImageUrl: url,
-          size: req.file.size,
-        });
-        await media.save();
-        // Lưu mediaId vào request
-        // req.mediaId = savedMedia._id; // Sử dụng req.mediaId để lưu mediaId
-        // next();
-      } catch (error) {
-        console.log("««««« error »»»»»", error);
-        return res.status(500).json({ message: "Upload file error", error });
-      }
-    });
-  },
-
   uploadImageCategory: (req, res, next) => {
     const { categoryId } = req.params;
     upload.single("image")(req, res, async (err) => {
@@ -204,6 +162,49 @@ module.exports = {
         return res
           .status(404)
           .json({ message: "tải ảnh đại diện thất bại", error });
+      }
+    });
+  },
+
+  uploadSingle: (req, res, next) => {
+    upload.single("image")(req, res, async (err) => {
+      try {
+        const { name } = req.body;
+        if (!req.file) {
+          return res.status(400).json({ message: "No image file provided" });
+        }
+        const S3 = new S3Client({
+          region: "auto",
+          endpoint: process.env.ENDPOINT,
+          credentials: {
+            accessKeyId: process.env.R2_ACCESS_KEY_ID,
+            secretAccessKey: process.env.R2_SECRET_ACCESS_KEY,
+          },
+        });
+
+        const fileName = generateUniqueFileName(req.file.originalname);
+
+        await S3.send(
+          new PutObjectCommand({
+            Body: req.file.buffer,
+            Bucket: "ecommerce",
+            Key: fileName,
+            ContentType: req.file.mimetype,
+          })
+        );
+
+        const url = `${process.env.R2_DEV_URL}/ecommerce/${fileName}`;
+        const media = new Media({
+          name: name,
+          coverImageUrl: url,
+        });
+        await media.save();
+        return res
+          .status(200)
+          .json({ message: "Upload success", payload: media });
+      } catch (error) {
+        console.log("««««« error »»»»»", error);
+        return res.status(500).json({ message: "Upload file error", error });
       }
     });
   },

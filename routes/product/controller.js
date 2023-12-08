@@ -109,6 +109,7 @@ module.exports = {
       width,
     } = req.body;
     try {
+      const media = await Media.findOne({ name: "LOGO" });
       const newProduct = new Product({
         name,
         price,
@@ -117,7 +118,7 @@ module.exports = {
         supplierId,
         categoryId,
         description,
-        imageId: null,
+        imageId: media._id,
         weight,
         length,
         height,
