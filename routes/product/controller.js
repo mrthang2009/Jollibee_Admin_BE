@@ -347,6 +347,7 @@ module.exports = {
       const products = await Product.find(condition)
         .populate("category")
         .populate("media")
+        .populate("supplier")
         .sort(sortOptions);
 
       return res.status(200).json({
