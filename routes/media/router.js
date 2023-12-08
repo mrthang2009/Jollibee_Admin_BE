@@ -1,5 +1,6 @@
 var express = require("express");
 var router = express.Router();
+const access = require("../../middlewares/access");
 
 const {
   uploadImageCategory,

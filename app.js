@@ -90,7 +90,6 @@ app.use(
 app.use(
   "/medias",
   passport.authenticate("jwt", { session: false }),
-  // access.checkRole(["MANAGE", "SALES", "SHIPPER"]),
   mediasRouter
 );
 

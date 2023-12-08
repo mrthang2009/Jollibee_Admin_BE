@@ -189,7 +189,7 @@ module.exports = {
           avatarUrl: url,
         });
         await media.save();
-        
+
         const employee = await Employee.findOneAndUpdate(
           { _id: id },
           { avatarId: media._id },
@@ -202,7 +202,7 @@ module.exports = {
       } catch (error) {
         console.log("««««« error »»»»»", error);
         return res
-          .status(500)
+          .status(404)
           .json({ message: "tải ảnh đại diện thất bại", error });
       }
     });
