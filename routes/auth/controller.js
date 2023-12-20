@@ -86,7 +86,6 @@ module.exports = {
     }
   },
 
-
   getMe: async (req, res, next) => {
     try {
       res

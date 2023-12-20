@@ -10,7 +10,6 @@ const {
   login,
   checkRefreshToken,
   getMe,
-  basicLogin,
 } = require('./controller');
 
 router.route('/login')
@@ -22,12 +21,6 @@ router.route('/login')
 
 router.route('/refresh-token')
   .post(checkRefreshToken)
-
-router.route('/basic')
-  .post(
-    passport.authenticate('basic', { session: false }),
-    basicLogin,
-  );
 
 router.route('/profile')
   .get(
