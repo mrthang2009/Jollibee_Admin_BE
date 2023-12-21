@@ -11,9 +11,6 @@ const generateToken = (user) => {
     {
       iat: Math.floor(Date.now() / 1000),
       ...user,
-      // email: user.email,
-      // name: user.firstName,
-      // algorithm,
     },
 
     jwtSettings.SECRET,
